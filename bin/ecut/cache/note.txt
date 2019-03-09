@@ -1,0 +1,135 @@
+
+WARN: HHH020003: Could not find a specific ehcache configuration for cache named [ecut.cache.entity.Clazz.students]; using defaults.
+
+【一级缓存】 Session 级别的缓存
+
+
+		对 一级缓存 进行管理的方法:
+		
+		void   evict( Object o ) 从 Session 管理的缓存中驱逐单个对象
+		
+		void   clear() 清除 Session 管理的缓存中所有的对象
+		
+		get 、find 、load 方法对 一级缓存 的使用:
+			
+			1、先查找 一级缓存 中是否有 相应的 id 对应的对象，如果有就立即返回(不再查询数据库)
+			2、如果在 一级缓存 中 未找到 相应的 id 对应的对象 ( 未命中 ) ，查询数据库
+			3、如果数据库中没有相应的 id 对应的记录，get 、find 返回 null ， load 则抛出 ObjectNotFoundException
+			4、如果在数据库中找到相应的 id 对应的记录，则返回与之对应的 Java 对象 ( load 可能会延迟 )
+			5、当 Java 对象被返回后，会将该对象 添加到 一级缓存 ( Session 级别的缓存 )
+
+		所有的持久化对象都被 Session 所缓存
+		
+		一级缓存是依赖于 Session 对象的，因此 只要 Session 还有效，它就存在，无法关闭
+
+【二级缓存】 SessionFactory 级别的缓存，高于一级缓存
+
+		即使是 Session 关闭了，只要 同一个 SessionFactory 对象还在，就有 二级缓存可用
+		
+		在 Hibernate 中，默认是没有开启 二级缓存 的
+		
+      		开启 对 二级缓存 的支持 ( EHcache)
+      		
+      			i>、导入 支持 二级缓存 的 jar 包
+      			
+						ehcache-2.10.3.jar
+						hibernate-ehcache-5.2.10.Final.jar
+						slf4j-api1.7.7.jar（日志）
+						 
+						
+      		    ii>、在 hibernate.cfg.xml 中开启，启用二级缓存支持
+      		    
+      				   <property name="hibernate.cache.region.factory_class">
+      				   		org.hibernate.cache.ehcache.EhCacheRegionFactory
+      				   </property>
+      				   
+      		   iii>、在映射文件中设置缓存策略
+      		   
+      		   		  指定 某个实体类型 的 对象 在 二级缓存 中的缓存策略
+      		          <class name="ecut.cache.entity.Customer" table="t_customer" >
+      		          		<cache usage="read-write" /> <!-- 缓存 当前 类型的对象 -->
+      		          		
+      		          </class>
+      		          
+      		          
+      		          <class name="cn.algom.entity.Category" table="category">
+      		          		....
+      		          		
+      		          		<!-- 在 set 、list 、map 等标签内部 可以指定 集合的 缓存策略 -->
+      		          		<list name="categories" >
+					        	<cache usage="read-write" /> <!-- 缓存 当前 关联的 集合 中的 对象 -->
+					        	<key column="parent_id" />
+					        	<list-index column="position" base="1" />
+					        	<one-to-many class="cn.algom.entity.Category" />
+					        </list>
+      		          </class>
+      			
+         在启用 二级缓存的前提下:
+      	get 、find 、load 方法对 一级缓存 和 二级缓存 的使用:
+			
+			1、先查找 一级缓存 、二级缓存 中是否有 相应的 id 对应的对象，如果有就立即返回(不再查询数据库)
+			2、如果在 一级缓存  、二级缓存 中 未找到 相应的 id 对应的对象 ( 未命中 ) ，查询数据库
+			3、如果数据库中没有相应的 id 对应的记录，get 、find 返回 null ， load 则抛出 ObjectNotFoundException
+			4、如果在数据库中找到相应的 id 对应的记录，则返回与之对应的 Java 对象 ( load 可能会延迟 )
+			5、当 Java 对象被返回后，会将该对象 添加到 一级缓存 和 二级缓存
+      	在启用二级缓存的时候，同一个session中如果将一个对象驱逐了，再去获取的时候会再查询数据库，只会在一级缓存中查找，并不会查看二级缓存
+      	
+      对 二级缓存进行管理:
+      
+      		Cache  cache = factory.getCache();
+      		
+      		cache.evict( Class entityClass ) 从二级缓存中驱逐指定类型的所有对象
+      		
+      		cache.evict( Class entityClass , Object id ) 从二级缓存中驱逐指定类型的、指定id对应的对象
+      		
+      		cache.evictAll()  清除二级缓存中的所有对象
+      		
+      		cache.evictAllRegions() 清除二级缓存中的所有区域
+      		
+      		cache.evictEntity( Class entityClass , Serializable id ) 从二级缓存中驱逐指定类型的、指定id对应的对象
+      		
+			cache.evictEntityRegions()  清除二级缓存中的所有区域
+			
+			cache.evictEntityRegion( Student.class ) 清除 指定类型对应的区域
+			cache.evictEntityRegion( "ecut.cache.entity.Student" ) 清除 指定类型对应的区域 参照ehcache.xml文件
+			
+			cache.evictCollectionRegion( "ecut.cache.entity.Clazz.students" ) 清除指定名称对应的集合缓存区域
+      			
+【查询缓存】 
+		需二级缓存的支持，查询缓存依赖二级缓存
+		final String HQL = "FROM Customer" ;
+		
+		Query<Customer> queryer = session.createQuery( HQL );
+		
+		queryer.list();
+		
+		queryer.list();
+		
+
+		在 Hibernate 中，开启对 查询缓存 的支持
+      
+      		<property name="hibernate.cache.use_query_cache" >true</property> <!-- 1、 开启对"查询缓存"的支持 -->
+      		
+		在程序中通过 查询器 设置是否使用 "查询缓存" :
+		
+			final String HQL = "FROM Customer" ;
+		
+			Query<Customer> queryer = session.createQuery( HQL , Customer.class );
+			
+			queryer.setCacheable( true );  /** 2、通过查询器 设置 是否使用 "查询缓存" */
+			
+			queryer.list();
+			
+			System.out.println( "~~~~~~~~~~~~~~~~~~" );
+			
+			queryer.list();
+		
+	
+		list 方法对 缓存的使用:
+		
+			1、执行 list 方法将导致执行查询操作，先查找 "查询缓存"
+			2、如果在 "查询缓存" 命中了需要查找的数据，则直接返回 "查询缓存" 中的数据
+			3、如果在 "查询缓存" 未命中，则查询数据库并返回数据，之后将查询到的数据 放入到 "查询缓存" 中
+		
+
+

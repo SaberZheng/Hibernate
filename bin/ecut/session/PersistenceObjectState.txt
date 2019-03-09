@@ -1,0 +1,46 @@
+
+
+											JVM				OID(Object Identifier  对象标识符  )				被 Session 管理				   数据库
+
+Transient ( 瞬时状态 )							  有				 		 无											否						无
+
+ Persistent ( 持久化状态 )						  有				  		有											是						有( 取决于是否执行了insert语句)
+ 	
+ Detached ( 游离状态 )							  有				  		有											否						有
+ 
+ Removed ( 移除 )							             有				  		有											否						无
+
+Persistent 和 Detached区别在于是否被session所管理
+
+	核心: 处于 持久化状态的 对象 的 OID 与 数据库中的 某条记录的 主键 一定是 相等的。
+	
+	
+	对象标识符属性 :  private Integer id ; 
+	
+	对象标识符属性的值 称作 Object Identifier ( 对象标识符 )  ，比如 id = 100 ;
+	
+	
+
+	判断指定的对象是否 被 Session 对象所管理:  boolean  contains( Object po )
+	
+	将尚未执行的SQL语句执行:		void 	flush()
+	
+	将 一个 被 Session 管理的对象驱逐: void  evict( Object po )
+	
+	将 整个 Session 所管理的所有的对象全部清理: void  clear()
+	
+	如果 一个 Session 对象执行了 close() 方法，则该 Session 对象将无效，一次 曾经被它管理的对象也将进入游离状态
+	
+	java.sql.Connection 中定义的事务隔离级别:
+	
+			public static final int	TRANSACTION_NONE	:	0
+			
+			public static final int	TRANSACTION_READ_UNCOMMITTED	:	1
+			
+			public static final int	TRANSACTION_READ_COMMITTED	:	2
+			
+			public static final int	TRANSACTION_REPEATABLE_READ	:	4
+			
+			public static final int	TRANSACTION_SERIALIZABLE	:	8
+			
+			

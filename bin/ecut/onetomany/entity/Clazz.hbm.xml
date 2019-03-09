@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.onetomany.entity.Clazz" table="t_class">
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> 
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+		<!-- 使用 set 标记 映射 Set 集合 ， name 属性指定 实体类中的 Set 集合的名称,order-by 所对应的表中的列名 -->
+		<set name="students" order-by="id ASC"  cascade="all" >
+			<!-- 使用 key 的 column 属性指定 对方 ( many 一方 ) 表中 参照 当前表 ( t_class ) 的主键的那个外键的名称 -->
+			<key column="class_id" />
+			<!-- 指定 对方  ( many 一方 )  的类型 ( Set 集合中存放的元素的类型 )  -->
+			<one-to-many class="ecut.onetomany.entity.Student" />
+		</set>
+	
+	</class>
+	
+</hibernate-mapping>

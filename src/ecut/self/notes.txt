@@ -1,0 +1,92 @@
+
+1、商品分类数据库表
+
+	drop  table if exists  t_category ;
+	
+	create table t_category (
+		id int(5) primary key ,
+		name varchar(150) ,
+		position int(2) ,
+		parent_id int(5) ,
+		foreign key ( parent_id ) references t_category ( id )
+	);
+	
+	insert into t_category ( id , name , position , parent_id )  values (  1001 , '图书音像' , 2 , null ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  1002 , '小说' , 2  , 1001 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  1003 , '教学辅导' , 1  , 1001 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  1004 , '计算机' , 3  , 1001 ) ;
+	
+	insert into t_category ( id , name , position , parent_id )  values (  1005 , '玄幻' , 2  , 1002 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  1006 , '言情' , 1  , 1002 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  1007 , '武侠' , 3  , 1002 ) ;
+	
+	insert into t_category ( id , name , position , parent_id )  values (  2001 , '数码产品' , 1 , null ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  2002 , '手机' , 1 , 2001 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  2003 , '电脑' , 2 , 2001 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  2004 , '相机' , 3 , 2001 ) ;
+	
+	insert into t_category ( id , name , position , parent_id )  values (  2005 , '魅族' , 2 , 2002 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  2006 , '小米' , 1 , 2002 ) ;
+	insert into t_category ( id , name , position , parent_id )  values (  2007 , '坚果Pro' , 3 , 2002 ) ;
+	
+
+2、类
+
+		public class Category  {
+				
+				/** 对象标识符属性 ( 属性值就是 对象标识符 ( Object Identifier ) )*/
+				private Integer id ;
+				
+				/** 分类的名称 */
+				private String name ; 
+				
+				/** 将来在 界面 中显示时的位置*/
+				private int position ;
+		
+		}
+		
+3、映射文件:
+
+
+		/** 先 把 当前的分类 对象 当作 一个 父分类来对待 ，那么它可能对应 多个 子分类 */
+		private List<Category> categories ; // 维护 从 父分类( one ) 到 子分类 ( many ) 的 一对多 关联关系
+	
+		<!--   先 把 当前的分类 对象 当作 一个 父分类来对待 ，那么它可能对应 多个 子分类 -->
+		<list name="categories" >
+			<key column="parent_id" />
+			<list-index base="1" column="position" /> 
+			<!-- 指定 对方  ( many 一方 )  的类型 ( List 集合中存放的元素的类型 )  -->
+			<one-to-many class="org.malajava.entity.Category" />
+		</list>
+		
+		
+		/** 再 把 当前分类对象 当作一个 子分类来对待，那么它可能有一个 父分类 */
+		private Category parent ;  // 维护 从  子分类 ( many ) 到  父分类( one ) 的 多对一 关联关系
+		
+		<!-- 维护从 子分类 ( many ) 到  父分类( one )  的 多对一 关联 -->
+		<many-to-one name="parent" class="org.malajava.entity.Category" column="parent_id" />
+
+
+4、在配置文件中 添加映射文件
+
+
+5、测试:
+
+		第一个角度: 从 一对多角度测试 
+		
+				存:  保存一个分类，并为其添加子分类
+				
+				取:  获取一个分类，并获取其子分类
+				
+		第二个角度: 从 多对一角度测试	
+		
+				存:  保存一个分类，并为其添加父分类
+				
+				取:  获取一个分类，并获取其父分类
+
+	    第三个角度: 综合
+	   
+	   			存: 保存一个分类，指定其 父分类 和 子分类 
+	   			
+	   			取: 获取一个分类，并获取其 父分类 和 子分类 
+

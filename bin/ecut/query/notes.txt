@@ -1,0 +1,31 @@
+
+
+Criteria 查询 ，Query  By Criteria ( QBC )
+
+		JPA 规范中定义的一种查询方法，但是不推荐使用
+
+HQL : Hibernate Query Language , Hibernate 查询语言 ( 建议使用 )
+
+Native SQL : Native SQL Query , 使用原生 SQL 语句进行查询
+
+
+满足条件的是内连接
+不满足添加用null去填充是外连接
+
+谁在join前就是左，join后就是右
+
+右边那张表不满足条件的也列出来
+
+SELECT s.id ,s.name , c.id, c.name FROM  t_student s RIGHT JOIN t_class c ON  s.class_id = c.id;
+
+左边那张表不满足条件的也列出来
+
+SELECT s.id ,s.name , c.id, c.name FROM  t_class c LEFT JOIN t_student s ON  s.class_id = c.id;
+
+驱动表 被驱动表
+
+
+内连接：inner join、等值连接，非等值连接
+外连接：left join、right join、full outer join （MySQL不支持）
+ 
+在Java中尽量避免右外连接

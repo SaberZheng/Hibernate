@@ -1,0 +1,125 @@
+核心类和接口
+
+org.hibernate.cfg.Configuration：Configuration类表示配置对象，用来读取并解析 hibernate 配置文件
+
+	注意：Configuration类的configure实例方法负责读取配置文件（hibernate.cfg.xml）
+
+org.hibernate.SessionFactory：SessionFactory接口实例专门用来创建连接到指定数据库的会话对象
+
+org.hibernate.Session：Session接口的实例是hibernate应用的核心对象，提供了大量的对持久化对象进行操作的方法
+
+	注意：这里的会话指的是当前的Java应用程序和数据库服务器之间的会话（绝对不是HttpSession）
+	
+	session接口中定义的用来操作持久化对象的方法
+	
+	Serializable 	save(Object object)	 保存一个对象到数据库中并返回与之对应的对象标识符（主键的值）
+	
+	void persist(Object object) 标准的JPA（Java Persistence API 应用程序编程接口（application program interface））提供的方法，用来持久化一个对象   javax.persistence.EntityManager中的
+	
+	void saveOrUpdate(Object object) 用来更新一个持久化对象（需要根据对象标识符来实现）
+									默认是根据对象标识符是否为null 来判断应该执行保存操作还是更新操作
+	void update(Object object) 用来持久化或更新一个对象
+	
+	void delete(Object object) 用来删除一个持久化的对象
+	
+	<T> T get(Class<T> entityType,Serializable id) 从数据库汇总查询一条记录并封装成一个相应类型的Java对象
+			默认不支持延迟加载,当id对应的数据不存在时返回null
+	<T> T load(Class<T> theClass,Serializable id)  从数据库汇总查询一条记录并封装成一个相应类型的Java对象
+			默认支持延迟加载,当id对应的数据不存在时抛出ObjectNotFoundException
+	<T> T find(Class<T> entityClass, Object primaryKey)  从数据库汇总查询一条记录并封装成一个相应类型的Java对象    javax.persistence.EntityManager中的
+			默认不支持延迟加载,当id对应的数据不存在时返回null
+	Query 	createQuery(String queryString) 根据给定的 queryString 来创建一个查询器（基于HQL实现的）
+	
+	void  evict(Object arg0) 将指定的对象从关联的session对象中驱逐
+	
+	
+org.hibernate.Transaction：Transaction接口的实例表示事务对应的对象，用来对事务进行控制
+
+org.hibernate.query.Query：Query接口的实例是hibernate应用中查询时的核心对象
+
+	注意：Hibernate早期（5.x之前）版本中使用query接口是org.hibernate.Query
+
+对象识别符的生成策略
+
+在jvm所管理的堆内存中，存放的是Java对象，用来区分不同对象的标识就叫做对象标识符（object identifier）
+	对象标识对应的属性，称作标识符属性，比如 private Integer id; 建议咋样的属性采用引用类型。
+	而标识符属性的取值，就是标识符，用来唯一的标记一个对象（用来区分对象和其他对象）。
+在数据库表中，存放的记录（关系），用来区分不同记录的标识叫做主键（Primary Key）
+
+increment自动增长，适用于对象标识符属性是int 、 long、 short、byte 及其包装类型时
+		 注意，这里的自动增长由hibernate 先查询数据库中的最大主键后再增长
+		 select max(id) from t_customer;
+sequence
+identity
+uuid
+assigned
+foreign
+
+持久化对象的生命周期
+
+PO persistence object 
+
+瞬时状态：new出来的对象仅仅存在虚拟机的内存中，虚拟机关闭数据丢失
+
+持久化状态：通过save方法保存到数据库中，即使虚拟机关闭也可以中数据库中读取到想要的数据。通过get load find从数据库加载到数据并没有抛出异常，就立即进入持久化状态
+并不是非要提交事务才进入持久化状态，执行完save操作就已经是持久化状态了
+游离态：把session关闭或者将对象驱除或者清除了就是游离的状态
+
+移除状态：通过delete方法之后，数据库中没有数据了，但数据加载到了jvm所管理内存中，对象对应的内存中是有数据的，类似于瞬时状态
+
+集合映射和关联关系
+	
+	多对一：	数据库 、映射 、持久化类（实体类）、添加映射到配置文件、测试
+		1、从数据库中获取一个学生对象，之后获得所属的班级
+		2、保存一个新创建的学生对象到数据，并指定所属的班级
+		3、保存一个新创建的学生，并为其创建一个新的班级，一起保存
+				
+		java.lang.IllegalStateException: org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance beforeQuery flushing: ecut.manytoone.entity.Clazz
+		级联操作：保存student的对象同时会把关联的瞬时状态的对象class也保存
+	一对多
+	 	1、从数据库中获取一个班级对象，之后获得所属学生的集合
+		2、保存一个新创建的班级对象到数据库，并为其添加学生，将学生一起保存
+	一对多双向
+	
+	自关联list  参照self工程
+	
+	一对一
+	
+	
+	map
+	
+	多对多：拆成两个一对多
+	
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1、get 、load 、find 的区别:
+
+	get 、load 、find 都是用来从数据库中加载一条记录并包装成指定类型的对象
+	
+	get( Class<?> c , Serializable id )
+	
+		a、当 id 对应的数据在 数据库中不存在时，get 返回 null
+		
+		b、get 方法会立即查询数据库 并返回数据
+	
+	load( Class<?> c , Serializable id )
+	
+		a、当 id 对应的数据在 数据库中不存在时，load 方法会抛出 ObjectNotFoundException
+		
+		b、load 方法 "默认" 不会立即查询数据库，而是等到要使用除了id之外的其它数据时才执行查询操作并返回数据
+		
+				关闭对 Customer 的延迟加载: 
+					<class name="org.malajava.entity.Customer" table="t_customer"  lazy="false" >
+					
+				启用对 Customer 的延迟加载:
+					 <class name="org.malajava.entity.Customer" table="t_customer"  lazy="true" >
+	
+	find( Class<?> c , Serializable id ) 属于 JPA 规范中定义的方法 ( javax.persistence.EntityManager )
+	
+		a、当 id 对应的数据在 数据库中不存在时，find 返回 null
+		
+		b、find 方法会立即查询数据库 并返回数据
+脏读：一个事务读到了另一个事务尚未提交的数据
+
+1、数据库里有没有数据
+2、jvm内存中是否有数据
+3、是否被session所管理

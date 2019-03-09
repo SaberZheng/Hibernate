@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.cache.entity.Student" table="t_student">
+	
+		<!-- 指定 Student  类型的 对象的 缓存策略  -->
+		<!-- <cache usage="read-write" /> -->
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> 
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+	</class>
+	
+</hibernate-mapping>

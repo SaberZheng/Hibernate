@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.cache.entity.Customer" table="t_customer" lazy="true" >
+	
+		<!-- 指定 Customer 类型的 对象的 缓存策略  -->
+		<cache usage="read-write" />
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" />
+		</id>
+	
+		<property name="email" type="string" column="email" />
+		<property name="password" type="string" column="password" />
+		<property name="nickname" type="string" column="nickname" />
+		<property name="gender" type="character" column="gender" />
+		<property name="birthdate" type="date"  column="birthdate" />
+		<property name="married" type="yes_no" column="married" />
+	
+	</class>
+	
+</hibernate-mapping>

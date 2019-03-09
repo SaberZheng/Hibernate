@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+	
+	
+<hibernate-configuration>
+
+	<session-factory>
+		<!-- 指定连接数据库的基本信息 -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<!-- & 符号需要转义 为&amp; -->
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF8</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">123456</property>
+
+		<!--  通用性的工具，对所有的数据库都是通用的，所以还需要根据所用数据库的类型指定数据方言类（在hibernate core 包中的dialect中）-->
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		
+		<!-- 指示是否显示 执行过的 SQL 语句 -->
+		<property name="show_sql">true</property>
+		<!-- 指示是否对 SQL 语句进行格式化输出 -->
+		<property name="format_sql">true</property>
+		<!--导入映射文件  -->
+		<mapping resource="ecut/orm/entity/Customer.hbm.xml"/>
+		
+	</session-factory>
+
+</hibernate-configuration>

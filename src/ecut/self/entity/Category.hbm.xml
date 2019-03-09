@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.self.entity.Category" table="t_category">
+	
+		<id name="id" type="integer" column="id" >
+			<!-- <generator class="increment" />  -->
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+		<property name="position" type="int" column="position" />
+		
+		<!-- 先 把 当前的分类 对象 当作 一个 父分类来对待 ，那么它可能对应 多个 子分类 -->
+		<list name="categories" cascade="all">
+			<key column="parent_id" />
+			<!-- list是有顺序的，下标从0开始 , 添加在第一个子类的时候放在list下标为1的位置上，即position从1开始-->
+			<!-- <index base="1" column="position" />  -->
+			<list-index base="1" column="position" /> 
+			<!-- 指定 对方  ( many 一方 )  的类型 ( List 集合中存放的元素的类型 )  -->
+			<one-to-many class="ecut.self.entity.Category" />
+		</list>
+		
+		<!-- 再 把 当前分类对象 当作一个 子分类来对待，那么它可能有一个 父分类  -->
+		<!-- 维护从 子分类 ( many ) 到  父分类( one )  的 多对一 关联 -->
+		<many-to-one  cascade="all" name="parent" class="ecut.self.entity.Category" column="parent_id" />
+	
+	</class>
+	
+</hibernate-mapping>

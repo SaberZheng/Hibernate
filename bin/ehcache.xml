@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE ehcache >
+
+<ehcache>
+	<!-- 存储位置 -->
+    <diskStore path="java.io.tmpdir"/>
+	<!-- 默认的cache配置 -->
+    <defaultCache maxElementsInMemory="10000"
+				        eternal="false"
+				        timeToIdleSeconds="120"
+				        timeToLiveSeconds="120"
+				        overflowToDisk="true" />
+	<!-- 指定 缓存区域（Region）的名称 并配置  -->
+    <cache name="ecut.cache.entity.Student"
+		        maxElementsInMemory="10000"
+		        eternal="false"
+		        timeToIdleSeconds="300"
+		        timeToLiveSeconds="600"
+		        overflowToDisk="true" />
+
+    <cache name="ecut.cache.entity.Customer"
+		        maxElementsInMemory="10000"
+		        eternal="false"
+		        timeToIdleSeconds="300"
+		        timeToLiveSeconds="600"
+		        overflowToDisk="true" />
+		        
+    <cache name="ecut.cache.entity.Clazz"
+		        maxElementsInMemory="10000"
+		        eternal="false"
+		        timeToIdleSeconds="300"
+		        timeToLiveSeconds="600"
+		        overflowToDisk="true" />    
+
+    <cache name="ecut.cache.entity.Clazz.students"
+		        maxElementsInMemory="10000"
+		        eternal="false"
+		        timeToIdleSeconds="300"
+		        timeToLiveSeconds="600"
+		        overflowToDisk="true" />   
+
+
+</ehcache>

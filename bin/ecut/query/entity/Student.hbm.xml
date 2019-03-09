@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.query.entity.Student" table="t_student">
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> 
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+		<!-- 维护从 学生 ( many ) 到 班级 ( one ) 的 多对一 关联 -->
+		<many-to-one name="clazz" class="ecut.query.entity.Clazz" column="class_id" />
+	
+	</class>
+	
+</hibernate-mapping>

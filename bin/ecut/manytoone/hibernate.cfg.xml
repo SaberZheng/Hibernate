@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+	
+	
+<hibernate-configuration>
+
+	<session-factory>
+	
+		<!-- 指定连接数据库的基本信息 -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF8</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">123456</property>
+		
+		<!-- 设置事务隔离级别 , 取值可以是 1、2、4、8 -->
+		<property name="hibernate.connection.isolation">1</property>
+		<!-- 设置事务是否自动提交 , 取值可以是 true 、false -->
+		<property name="hibernate.connection.autocommit">false</property>
+		
+		<!-- 指定数据方言类 -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		
+		<!-- 指示是否显示 执行过的 SQL 语句 -->
+		<property name="hibernate.show_sql">true</property>
+		<!-- 指示是否对 SQL 语句进行格式化输出 -->
+		<property name="hibernate.format_sql">false</property>
+		
+		<mapping resource="ecut/manytoone/entity/Clazz.hbm.xml"/>
+		<mapping resource="ecut/manytoone/entity/Student.hbm.xml"/>
+		
+	</session-factory>
+
+</hibernate-configuration>

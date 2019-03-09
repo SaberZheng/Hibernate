@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.cache.entity.Clazz" table="t_class">
+	
+		<!-- 指定 Clazz 类型的 对象的 缓存策略  -->
+		<cache usage="read-write" />
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> 
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+		<!-- 在 set 、list 、map 等标签内部 可以指定 集合的 缓存策略  cascade级联-->
+		<set name="students" order-by="id ASC"  cascade="all" >
+			<cache usage="read-write"/> <!-- 指定集合的缓存策略 -->
+			<key column="class_id" />
+			<one-to-many class="ecut.cache.entity.Student" />
+		</set>
+	
+	</class>
+	
+</hibernate-mapping>

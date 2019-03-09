@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 映射文件告诉hibernate列与属性的对应关系  -->
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<!-- 指定 那个类 ( name 指定类名 ) 对应 那个表 ( table 指定表名 ) -->
+	<class name="ecut.orm.entity.Customer" table="t_customer">
+	
+		<!-- 对于 与 数据库主键 对应的 对象标识符属性 来说，要单独使用 id 标签来映射 
+				<id name="id" type="java.lang.Integer" column="id" >即使不指定完整类名也可以通过id的类型反射来确定
+				<id name="id" type="int" column="id" >
+		-->
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> <!-- 由 hibernate 提供的 对象标识符 生成策略 -->
+		</id>
+	
+		<!-- 指定 那个属性 ( name 指定属性名 )  对应 那个列 ( column 属性指定 列名 ) -->
+		<property name="email" type="string" column="email" />
+		<!-- 使用 type 属性指定 映射类型 ( 既不是 Java 类型，也不是 数据库类型，而是 中间类型 ( 媒婆 ) ) -->
+		<property name="password" type="string" column="password" />
+		<property name="nickname" type="string" column="nickname" />
+		<!-- Java 中的 char 类型在 hibernate 中对应的映射类型是 character -->
+		<property name="gender" type="character" column="gender" />
+		<property name="birthdate" type="date"  column="birthdate" />
+		<!-- Java 中的 boolean  类型在 hibernate 中对应的映射类型可以是 true_false 、yes_no(true就存y,fals 存y),bit(存0，1)-->
+		<property name="married" type="yes_no" column="married" />
+	
+	</class>
+	
+</hibernate-mapping>

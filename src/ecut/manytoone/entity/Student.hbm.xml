@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+
+	<class name="ecut.manytoone.entity.Student" table="t_student">
+	
+		<id name="id" type="integer" column="id" >
+			<generator class="increment" /> 
+		</id>
+	
+		<property name="name" type="string" column="name" />
+		
+		<!-- 维护从 学生 ( many ) 到 班级 ( one ) 的 多对一 关联 -->
+		<!-- many-to-one 中的 lazy 可以是 false（不延迟） 、proxy（产生一个代理对象，用的是时候产生真实对象） 、no-proxy（直接产生真实对象） -->
+		<many-to-one name="clazz" class="ecut.manytoone.entity.Clazz" column="class_id"  lazy="proxy" cascade="all" />
+
+	</class>
+	
+</hibernate-mapping>
