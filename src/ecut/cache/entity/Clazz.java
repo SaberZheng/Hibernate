@@ -10,8 +10,8 @@ public class Clazz implements Serializable {
 	private Integer id;
 	private String name;
 	
-	// 当前的班级都有那些学生
-	private Set<Student> students; /** 维护从 班级( one ) 到 学生( many ) 的 一对多 关联关系 */
+	// 当前的班级都有那些学生, 维护从 班级( one ) 到 学生( many ) 的 一对多 关联关系 
+	private Set<Student> students; 
 	
 	public Integer getId() {
 		return id;
